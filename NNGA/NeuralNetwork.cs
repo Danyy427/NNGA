@@ -19,6 +19,8 @@ namespace NNGA
 
         public int destinationIndex { get; set; }
         public NodeType destinationType { get; set; }
+
+        public double weight { get; set; }
     }
 
     internal class NeuralNetwork
@@ -106,7 +108,7 @@ namespace NNGA
                     node.CalculateValue();
                 }
             }
-        }
+        }   
 
         public void MakeConnectionByNodeRefRandom(ref Node from, ref Node to, int range = 4)
         {
@@ -380,12 +382,13 @@ namespace NNGA
             }
         }
 
-        public void MakeConnectionByConnectionData(ConnectionData connectionData, double weight)
+        public void MakeConnectionByConnectionData(ConnectionData connectionData)
         {
             var sourceType = connectionData.sourceType;
             var destType = connectionData.destinationType;
             var sourceIndex = connectionData.sourceIndex;
             var destination = connectionData.destinationIndex;
+            var weight = connectionData.weight;
 
             if (sourceType == NodeType.InputNode)
             {
@@ -465,7 +468,7 @@ namespace NNGA
             }
         }
 
-        public void MakeConnectionByConnectionData(ConnectionData connectionData, int range)
+        public void MakeConnectionByConnectionDataRandom(ConnectionData connectionData, int range)
         {
             var sourceType = connectionData.sourceType;
             var destType = connectionData.destinationType;
