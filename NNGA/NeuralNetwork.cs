@@ -33,6 +33,68 @@ namespace NNGA
         public List<Node> InternalNodes => _internalNodes;
         public List<Node> OutputNodes => _outputNodes;
 
+        public List<Connection> InputConnectionsOutgoing
+        {
+            get 
+            {
+                List<Connection> connections = new List<Connection>();
+                _inputNodes.ForEach(x => connections.AddRange(x.Outgoing));
+                return connections;
+            }
+        }
+
+        public List<Connection> InternalConnectionsOutgoing
+        {
+            get
+            {
+                List<Connection> connections = new List<Connection>();
+                _internalNodes.ForEach(x => connections.AddRange(x.Outgoing));
+                return connections;
+            }
+        }
+
+        public List<Connection> InternalConnectionsIncoming
+        {
+            get
+            {
+                List<Connection> connections = new List<Connection>();
+                _internalNodes.ForEach(x => connections.AddRange(x.Incoming));
+                return connections;
+            }
+        }
+
+        public List<Connection> OutputConnectionsIncoming
+        {
+            get
+            {
+                List<Connection> connections = new List<Connection>();
+                _outputNodes.ForEach(x => connections.AddRange(x.Incoming));
+                return connections;
+            }
+        }
+
+        public List<Connection> AllOutgoingConnections
+        {
+            get
+            {
+                List<Connection> connections = new List<Connection>();
+                connections.AddRange(InputConnectionsOutgoing);
+                connections.AddRange(InternalConnectionsOutgoing);
+                return connections;
+            }
+        }
+
+        public List<Connection> AllIncomingConnections
+        {
+            get
+            {
+                List<Connection> connections = new List<Connection>();
+                connections.AddRange(InternalConnectionsIncoming);
+                connections.AddRange(OutputConnectionsIncoming);
+                return connections;
+            }
+        }
+
         public NeuralNetwork(int inputCount, int internalCount, int outputCount)
         {
             _inputNodes = new List<Node>(inputCount);
@@ -41,15 +103,15 @@ namespace NNGA
 
             for (int i = 0; i < inputCount; i++)
             {
-                _inputNodes[i] = new Node(NodeType.InputNode);
+                _inputNodes.Add(new Node(NodeType.InputNode));
             }
             for (int i = 0; i < internalCount; i++)
             {
-                _internalNodes[i] = new Node(NodeType.InternalNode);
+                _internalNodes.Add(new Node(NodeType.InternalNode));
             }
             for (int i = 0; i < outputCount; i++)
             {
-                _outputNodes[i] = new Node(NodeType.OutputNode);
+                _outputNodes.Add(new Node(NodeType.OutputNode));
             }
         }
 
@@ -103,7 +165,7 @@ namespace NNGA
 
             foreach (Node node in _outputNodes)
             {
-                if (node.Outgoing.Count != 0)
+                if (node.Incoming.Count != 0)
                 {
                     node.CalculateValue();
                 }
@@ -508,6 +570,13 @@ namespace NNGA
             {
                 throw new Exception("The source cannot be an output node");
             }
+        }
+        
+        public void ClearConnections()
+        { 
+            _inputNodes.ForEach(x => x.ClearConnections());
+            _outputNodes.ForEach(x => x.ClearConnections());
+            _internalNodes.ForEach(x => x.ClearConnections());
         }
     }
 }

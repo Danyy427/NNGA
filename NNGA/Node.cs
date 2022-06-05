@@ -46,7 +46,7 @@ namespace NNGA
             this.Bias = Bias;
         }
 
-        public void RandomizeBias(int minMax)
+        public void RandomizeBias(int minMax = 1)
         {
             Bias = Utils.NextDouble(-minMax, minMax);
         }
@@ -108,7 +108,7 @@ namespace NNGA
             {
                 throw new Exception("Only input type nodes can be inputted values.");
             }
-            if (input > 1 || input < -1)
+            if (input > 1 || input < 0)
             {
                 throw new ArgumentException("Input value must be between 0 and 1");
             }
@@ -138,7 +138,13 @@ namespace NNGA
             {
                 throw new Exception("Only output type nodes can output values in a possibility range.");
             }
-            return (Value + 1.0) / 2.0;
+            return Value;
+        }
+
+        public void ClearConnections()
+        {
+            Outgoing.Clear();
+            Incoming.Clear();
         }
     }
 

@@ -10,19 +10,23 @@ namespace NNGA
     {
         public double fitness { get; set; }
         public NeuralNetwork NN { get; set; }
-        public List<ConnectionData> Genome { get; set; }
+
+        private List<ConnectionData> _genome;
+        public List<ConnectionData> Genome => _genome;
         public int GenomeLength { get; set; }
 
         public Individual(int length, int inputCount, int internalCount, int outputCount, bool isRandom = false, int weightRange = 4)
         {
             NN = new NeuralNetwork(inputCount, internalCount, outputCount);
             this.GenomeLength = length;
-            Genome = new List<ConnectionData>(GenomeLength);
+            _genome = new List<ConnectionData>(GenomeLength);
             if(isRandom == true)
             {
                 for (int i = 0; i < length; i++)
                 {
-                    Genome.Add(RandomGene(weightRange));
+                    var gene = RandomGene(weightRange);
+                    Genome.Add(gene);
+                    NN.MakeConnectionByConnectionData(gene);
                 }
             }
         }
@@ -50,7 +54,7 @@ namespace NNGA
                 gene.destinationIndex = Utils.NextInt(0, NN.OutputNodes.Count);
             }
 
-            gene.weight = Utils.NextInt(-weightRange, weightRange);
+            gene.weight = Utils.NextDouble(-weightRange, weightRange);
 
             return gene;
         }
